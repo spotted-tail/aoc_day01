@@ -7,12 +7,13 @@ class CalibrationDoc():
     def __init__(self):
         self.calibration_values = 0
 
-    def extract_values_from_doc(self, filename):
+    def extract_values_from_doc(self, filename, debug):
         sum = 0
         try:
             with open(filename, 'r') as fptr:
                 for line in fptr:
-                    print (line, end='')
+                    if debug:
+                        print (line, end='')
                     match = re.search(r'^\D*(\d)', line)
                     if match:
                        tens_digit = int(match.group(1))
@@ -22,7 +23,8 @@ class CalibrationDoc():
                        ones_digit = int(match.group(1))
 
                     value = tens_digit * 10 + ones_digit
-                    print(f'Value = {value}\n')
+                    if debug:
+                        print(f'Value = {value}\n')
                     sum += value
 
         except IOError:
@@ -32,7 +34,7 @@ class CalibrationDoc():
         self.calibration_values = sum
 
     def print_cal_values(self):
-        print (f'CalibrationValue {self.calibration_values}')
+        print (f'Calibration Value = {self.calibration_values}')
 
 
 def parse_commandline():
@@ -52,7 +54,7 @@ def parse_commandline():
 def main():
     cal_doc = CalibrationDoc()
     args = parse_commandline()
-    cal_doc.extract_values_from_doc(args.values)
+    cal_doc.extract_values_from_doc(args.values, args.debug)
     cal_doc.print_cal_values()
 
 if __name__ == '__main__':
